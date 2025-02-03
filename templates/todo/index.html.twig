@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Todo List{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-semibold text-center text-blue-600">Ma Todo List</h1>
+
+        <div {{ react_component('TodoList', {}) }}></div>
+    </div>
+{% endblock %}
