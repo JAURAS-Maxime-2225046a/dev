@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\UserAPI;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -40,7 +41,17 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
-        // Sauvegarde tous les utilisateurs dans la base de données
+        // Création des UserAccount avec name et email
+        for ($i = 0; $i < 10; $i++) {
+            $userAccount = new UserAPI();
+            $userAccount->setName('name'.$i);
+            $userAccount->setEmail('email'.$i.'@gmail.com');
+
+            // Persist l'UserAccount dans la base de données
+            $manager->persist($userAccount);
+        }
+
+        // Sauvegarde tous les utilisateurs et UserAccount dans la base de données
         $manager->flush();
     }
 }
