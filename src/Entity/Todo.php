@@ -13,15 +13,19 @@ class Todo
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('todo:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('todo:read')]
     private ?string $title = null;
 
     #[ORM\Column]
+    #[Groups('todo:read')]
     private ?bool $completed = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups('todo:read')]
     private ?\DateTimeInterface $createdAt = null;
 
     public function getId(): ?int
