@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\ApiLanguage;
 use App\Entity\User;
-use App\Entity\UserAPI;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -41,17 +41,22 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
-        // Création des UserAccount avec name et email
-        for ($i = 0; $i < 10; $i++) {
-            $userAccount = new UserAPI();
-            $userAccount->setName('name'.$i);
-            $userAccount->setEmail('email'.$i.'@gmail.com');
+        $languages = [
+            ['code' => 'fr', 'name' => 'Français', 'isActive' => true],
+            ['code' => 'en', 'name' => 'English', 'isActive' => false],
+            ['code' => 'es', 'name' => 'Español', 'isActive' => false],
+            ['code' => 'de', 'name' => 'Deutsch', 'isActive' => false],
+        ];
 
-            // Persist l'UserAccount dans la base de données
-            $manager->persist($userAccount);
+        foreach ($languages as $data) {
+            $language = new ApiLanguage();
+            $language->setCode($data['code']);
+            $language->setName($data['name']);
+            $language->setIsActive($data['isActive']);
+
+            $manager->persist($language);
         }
 
-        // Sauvegarde tous les utilisateurs et UserAccount dans la base de données
         $manager->flush();
     }
 }

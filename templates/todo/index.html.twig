@@ -4,7 +4,12 @@
 
 {% block body %}
     <div class="max-w-4xl mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
-        <h1 class="text-3xl font-semibold text-center text-blue-600">Ma Todo List</h1>
+        <div class="flex items-center justify-center relative">
+            <h1 class="text-3xl font-semibold text-blue-600 text-center">
+                Ma Todo List
+            </h1>
+            <div class="absolute right-0" {{ react_component('LanguageSelector', {}) }}></div>
+        </div>
 
         <div {{ react_component('TodoList', {}) }}></div>
     </div>
