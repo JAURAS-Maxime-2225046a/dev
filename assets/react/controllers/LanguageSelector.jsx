@@ -9,20 +9,59 @@ const LanguageSelector = () => {
     useEffect(() => {
         axios.get("/api/api_languages")
             .then(response => {
-                const languages = response.data.member; // Extraire la liste des langues
+                let languages = response.data.member;
+                const activeLang = languages.find(lang => lang.active) || languages[0];
+                languages = [activeLang, ...languages.filter(lang => lang.id !== activeLang.id)];
                 setLanguages(languages);
-                if (languages.length > 0) {
-                    setActiveLanguage(languages[0]); // Définir la première langue comme active
-                }
+                setActiveLanguage(activeLang);
             })
             .catch(error => {
                 console.error("Error fetching languages:", error);
             });
     }, []);
 
-    const handleLanguageChange = (language) => {
-        setActiveLanguage(language);
-        setShowDropdown(false);
+    const handleLanguageChange = (newLanguage) => {
+        if (newLanguage.id !== activeLanguage.id) {
+            // Désactiver l'ancienne langue
+            axios.patch(`/api/api_languages/${activeLanguage.id}`,
+                {
+                    code: activeLanguage.code,
+                    name: activeLanguage.name,
+                    isActive: false
+                }, {
+                    headers: {
+                        'Accept': 'application/ld+json',
+                        'Content-Type': 'application/merge-patch+json'
+                    }
+                }).then(() => {
+                // Activer la nouvelle langue
+                axios.patch(`/api/api_languages/${newLanguage.id}`,
+                    {
+                        code: newLanguage.code,
+                        name: newLanguage.name,
+                        isActive: true
+                    }, {
+                        headers: {
+                            'Accept': 'application/ld+json',
+                            'Content-Type': 'application/merge-patch+json'
+                        }
+                    }).then(() => {
+                    // Mettre à jour l'état local
+                    setActiveLanguage(newLanguage);
+                    setShowDropdown(false);
+                    setLanguages(prevLanguages =>
+                        prevLanguages.map(lang => ({
+                            ...lang,
+                            isActive: lang.id === newLanguage.id
+                        }))
+                    );
+                }).catch(error => {
+                    console.error("Erreur lors de l'activation de la langue :", error);
+                });
+            }).catch(error => {
+                console.error("Erreur lors de la désactivation de la langue :", error);
+            });
+        }
     };
 
     return (
@@ -40,14 +79,15 @@ const LanguageSelector = () => {
                         <label
                             key={lang.code}
                             className="flex items-center px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                            onClick={() => handleLanguageChange(lang)}
                         >
                             <input
                                 type="checkbox"
-                                checked={activeLanguage?.code === lang.code}
-                                onChange={() => handleLanguageChange(lang)}
+                                checked={activeLanguage?.id === lang.id}
+                                readOnly
                                 className="mr-2"
                             />
-                            {lang.code.toUpperCase()} {/* Afficher uniquement le code */}
+                            {lang.code.toUpperCase()}
                         </label>
                     ))}
                 </div>
