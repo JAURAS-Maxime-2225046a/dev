@@ -4,7 +4,21 @@
 
 Cette application permet à l'utilisateur de se connecter, de visualiser une todolist et de récupérer les langues depuis l'API Platform.
 
-> **Note** : Il arrive que les composants React ne s'affichent pas toujours correctement.
+> **Note** : Il arrive que les composants React ne s'affichent pas toujours correctement.  
+Si c'est le cas, essayez les étapes suivantes pour résoudre le problème :
+
+1. Sortez `{{ encore_entry_script_tags('app') }}` du bloc `javascripts` dans vos fichiers Twig comme suit :
+
+   ```twig
+   {% block javascripts %}
+       {# Ne pas inclure ici, mais le sortir du bloc pour tester #}
+   {% endblock %}
+   {{ encore_entry_script_tags('app') }}
+   ```
+
+2. Videz le cache de votre navigateur pour vous assurer que les anciennes versions des fichiers ne sont pas utilisées.
+
+Cela permet parfois de résoudre des problèmes d'affichage liés à l'ordre de chargement des scripts et aux caches du navigateur.
 
 ## Prérequis
 
@@ -30,20 +44,21 @@ Ensuite, exécutez cette commande pour installer les dépendances PHP via Compos
 ```bash
 composer install
 ```
-### 3. Démarrez le serveur Symfony
 
-Pour lancer l’application Symfony et accéder à votre backend, exécutez la commande suivante :
-
-```bash
-symfony serve
-```
-
-### 4. Compilez les assets front-end
+### 3. Compilez les assets front-end
 
 Une fois que les dépendances sont installées, vous devez compiler les assets (par exemple, React et Tailwind CSS) avec la commande suivante :
 
 ```bash
 npm run dev
+```
+
+### 4. Démarrez le serveur Symfony
+
+Pour lancer l’application Symfony et accéder à votre backend, exécutez la commande suivante :
+
+```bash
+symfony serve
 ```
 
 ## Utilisation
